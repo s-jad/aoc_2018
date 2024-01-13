@@ -30,16 +30,16 @@ fn process(input: &str) -> usize {
     }
 
     for (idx, (c_start, c_end)) in claims.iter().enumerate() {
-        let mut overlap_check = vec![];
+        let mut overlap_check = true;
         for x in c_start.0..c_end.0 {
             for y in c_start.1..c_end.1 {
                 if grid[x][y] >= 2 {
-                    overlap_check.push(false);
+                    overlap_check = false;
                 }
             }
         }
 
-        if overlap_check.len() == 0 {
+        if overlap_check {
             return idx + 1;
         }
     }
