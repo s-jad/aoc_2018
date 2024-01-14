@@ -2,13 +2,11 @@ use itertools::Itertools;
 use std::time::Instant;
 
 fn get_polymer_len(s: &[char], u: u8, l: u8) -> usize {
-    let upper = u as char;
-    let lower = l as char;
     let mut changes = 1;
 
     let mut new_s = s
         .iter()
-        .filter(|&&c| c != upper && c != lower)
+        .filter(|&&c| c != u as char && c != l as char)
         .collect_vec();
 
     while changes != 0 {
@@ -32,7 +30,7 @@ fn get_polymer_len(s: &[char], u: u8, l: u8) -> usize {
 }
 
 fn process(input: &str) -> usize {
-    let mut s = input.trim().chars().collect_vec();
+    let s = input.trim().chars().collect_vec();
 
     let mut min = 10000000;
 
