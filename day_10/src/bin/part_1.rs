@@ -2,7 +2,7 @@ use itertools::Itertools;
 use std::time::Instant;
 
 fn process(input: &str) -> usize {
-    let mut points = input
+    let points = input
         .lines()
         .map(|l| {
             let p = l
@@ -20,27 +20,20 @@ fn process(input: &str) -> usize {
     let mut minmax_y = (0, 0);
 
     for i in 0..11_000 {
-        let max_x = points
+        let (min_x, max_x, min_y, max_y) = points
             .iter()
-            .map(|(pos, vel)| pos.0 + vel.0 * i)
-            .max()
-            .unwrap();
-        let min_x = points
-            .iter()
-            .map(|(pos, vel)| pos.0 + vel.0 * i)
-            .min()
-            .unwrap();
-        let max_y = points
-            .iter()
-            .map(|(pos, vel)| pos.1 + vel.1 * i)
-            .max()
-            .unwrap();
-        let min_y = points
-            .iter()
-            .map(|(pos, vel)| pos.1 + vel.1 * i)
-            .min()
-            .unwrap();
-
+            .map(|(p, v)| (p.0 + v.0 * i, p.1 + v.1 * i))
+            .fold(
+                (std::i32::MAX, std::i32::MIN, std::i32::MAX, std::i32::MIN),
+                |acc, pos| {
+                    (
+                        acc.0.min(pos.0),
+                        acc.1.max(pos.0),
+                        acc.2.min(pos.1),
+                        acc.3.max(pos.1),
+                    )
+                },
+            );
         let area = (max_x.abs_diff(min_x) as usize * max_y.abs_diff(min_y) as usize) as usize;
 
         if area < min_area.0 {
@@ -49,6 +42,10 @@ fn process(input: &str) -> usize {
             minmax_y = (min_y, max_y);
         }
     }
+
+    println!("min_area: {min_area:?}");
+    println!("minmax_x: {minmax_x:?}");
+    println!("minmax_y: {minmax_y:?}");
 
     println!("");
     for y in minmax_y.0..=minmax_y.1 {
@@ -65,27 +62,7 @@ fn process(input: &str) -> usize {
         }
         println!("")
     }
-
-    // for (pos, vel) in points.iter_mut() {
-    //     let nx = pos.0 + vel.0;
-    //     let ny = pos.1 + vel.1;
-    //     *pos = (nx, ny);
-    // }
-
-    // if i % 10 == 0 {
-    //     for y in (min_y + 1)..max_y {
-    //         for x in (min_x + 1)..max_x {
-    //             if points.iter().map(|(pos, _)| pos).contains(&(x, y)) {
-    //                 print!("#");
-    //             } else {
-    //                 print!(".");
-    //             }
-    //         }
-    //         println!("");
-    //     }
-    //     println!("");
-    // }
-
+    println!("");
     1
 }
 
